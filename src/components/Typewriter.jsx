@@ -1,39 +1,45 @@
 import { useEffect, useRef, useState } from 'react'
-import typingSound from '../assets/typing.mp3'
+import typeSound from '../assets/type.mp3'
 
 export default function Typewriter({ text, speed = 40, onFinish }) {
-  const [displayedText, setDisplayedText] = useState('')
-  const [index, setIndex] = useState(0)
-
+  const [displayed, setDisplayed] = useState('')
+  const indexRef = useRef(0)
   const audioRef = useRef(null)
+  
+   useEffect(() => {
+  const unlock = () => {
+    const audio = new Audio()
+    audio.play().catch(() => {})
+    window.removeEventListener('click', unlock)
+  }
+
+  window.addEventListener('click', unlock)
+  return () => window.removeEventListener('click', unlock)
+}, [])
 
   useEffect(() => {
-    audioRef.current = new Audio(typingSound)
-    audioRef.current.volume = 0.2
+    audioRef.current = new Audio(typeSound)
+    audioRef.current.volume = 0.4
   }, [])
 
   useEffect(() => {
-    if (index < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayedText(prev => prev + text[index])
-        setIndex(index + 1)
-
-        // toca som somente se não for espaço
-        if (text[index] !== ' ') {
-          audioRef.current.currentTime = 0
-          audioRef.current.play().catch(() => {})
-        }
-      }, speed)
-
-      return () => clearTimeout(timeout)
-    } else {
-      // Para o som ao finalizar o parágrafo
-      audioRef.current.pause()
-      audioRef.current.currentTime = 0
-
-      if (onFinish) onFinish()
+    if (indexRef.current >= text.length) {
+      onFinish?.()
+      return
     }
-  }, [index, text, speed, onFinish])
 
-  return <p>{displayedText}</p>
+    const timeout = setTimeout(() => {
+      setDisplayed(prev => prev + text[indexRef.current])
+      indexRef.current++
+
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0
+        audioRef.current.play().catch(() => {})
+      }
+    }, speed)
+
+    return () => clearTimeout(timeout)
+  }, [displayed])
+
+  return <p>{displayed}</p>
 }

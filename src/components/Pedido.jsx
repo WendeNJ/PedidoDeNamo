@@ -1,29 +1,47 @@
 import { useRef, useState } from 'react'
 import monalisa from '../assets/monalisa.mp3'
+import useCinemaMode from '../hooks/useCinemaMode'
+import useContador from '../hooks/useContador'
 
 export default function Pedido() {
   const audioRef = useRef(new Audio(monalisa))
   const [aceitou, setAceitou] = useState(false)
   const [hearts, setHearts] = useState([])
+  const [mostrarMensagemFinal, setMostrarMensagemFinal] = useState(false)
 
-  function aceitar() {
-    audioRef.current.play()
-    setAceitou(true)
+  useCinemaMode(aceitou)
+  const segundos = useContador(aceitou)
 
-    // cria 40 corações com posição aleatória
-    const novosCoracoes = Array.from({ length: 40 }).map((_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 2
-    }))
+   function aceitar() {
+  audioRef.current.play()
+  setAceitou(true)
 
-    setHearts(novosCoracoes)
-  }
+  // corações contínuos
+  const intervalo = setInterval(() => {
+    setHearts(prev => [
+      ...prev,
+      {
+        id: Date.now(),
+        left: Math.random() * 100,
+        delay: 0
+      }
+    ])
+  }, 120)
+
+  setTimeout(() => clearInterval(intervalo), 6000)
+
+  // MOSTRAR MENSAGEM FINAL APÓS 2s
+  setTimeout(() => {
+    setMostrarMensagemFinal(true)
+  }, 2000)
+}
+
+    
 
   function fugir(e) {
     const btn = e.target
-    const maxX = window.innerWidth - btn.offsetWidth
-    const maxY = window.innerHeight - btn.offsetHeight
+    const maxX = window.innerWidth - btn.offsetWidth - 40
+    const maxY = window.innerHeight - btn.offsetHeight - 40
 
     btn.style.position = 'fixed'
     btn.style.left = Math.random() * maxX + 'px'
@@ -31,19 +49,16 @@ export default function Pedido() {
   }
 
   return (
-    <section className="page">
+    <section className={`page ${aceitou ? 'cinema' : ''}`}>
       {aceitou && (
         <div className="hearts-container">
-          {hearts.map(heart => (
+          {hearts.map(h => (
             <span
-              key={heart.id}
+              key={h.id}
               className="heart-float"
-              style={{
-                left: `${heart.left}vw`,
-                animationDelay: `${heart.delay}s`
-              }}
+              style={{ left: `${h.left}vw` }}
             >
-              ❤️
+              {['❤️','💖','💕','💘','💗'][Math.floor(Math.random() * 5)]}
             </span>
           ))}
         </div>
@@ -69,9 +84,12 @@ export default function Pedido() {
       )}
 
       {aceitou && (
-        <p className="destaque">
-          💖 Eu te amo muito! 💖
-        </p>
+        <>
+          <p className="destaque">💖 Eu te amo muito! 💖</p>
+          <p className="contador">
+            Já faz {segundos} segundos desde o nosso “sim” 💕
+          </p>
+        </>
       )}
     </section>
   )
