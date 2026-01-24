@@ -1,199 +1,118 @@
+/* ================= RESET ================= */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.app {
-  min-height: 100vh;
-  background-size: cover;
-  background-position: center;
-  position: relative;
+html, body {
+  height: 100%;
+}
+/* ================= TRANSIÇÃO SIM → CONTADOR ================= */
+
+.bloco-pergunta {
+  transition: 
+    opacity 0.6s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.heart-float:nth-child(n) {
-  left: calc(100% * random());
-}
-p::after {
-  content: '|';
-  margin-left: 3px;
-  animation: piscar 1s infinite;
+.bloco-pergunta.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@keyframes piscar {
-  0%, 50%, 100% { opacity: 1; }
-  25%, 75% { opacity: 0; }
-}
-
-
-.app::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-}
-
-.page {
-  position: relative;
-  z-index: 2;
-  min-height: 100vh;
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-align: center;
-  animation: fade 0.6s ease;
-}
-
-@keyframes fade {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-h1 {
-  color: #ff6b6b;
-  margin-bottom: 20px;
-}
-
-.texto {
-  max-width: 700px;
-}
-
-.texto p {
-  margin-bottom: 15px;
-  background: rgba(0,0,0,0.6);
-  padding: 15px;
-  border-radius: 12px;
-}
-
-.destaque {
-  font-size: 1.5rem;
-  color: #ff6b6b;
-}
-
-button {
-  margin-top: 20px;
-  padding: 14px 35px;
-  border: none;
-  border-radius: 30px;
-  font-weight: bold;
-  background: #ff6b6b;
-  color: white;
-  cursor: pointer;
-}
-
-button.amor {
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-.botoes {
-  display: flex;
-  gap: 15px;
-}
-
-.nao {
-  background: gray;
-}
-.hearts-container {
-  position: fixed;
-  inset: 0;
+.bloco-pergunta.hide {
+  opacity: 0;
+  transform: translateY(-20px);
   pointer-events: none;
-  overflow: hidden;
-  z-index: 9999;
 }
 
-.heart-float {
-  position: absolute;
-  bottom: -40px;
-  animation: subir 4.5s linear forwards;
-  opacity: 0.9;
+/* Conteúdo após o SIM */
+.pedido-conteudo {
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes subir {
-  0% {
-    transform: translateY(0) scale(0.8);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-120vh) scale(1.3);
-    opacity: 0;
-  }
+.pedido-conteudo.show {
+  opacity: 1;
+  transform: scale(1);
 }
 
-
-
-.cinema {
-  background: radial-gradient(circle, #000 40%, #000 100%);
-}
-
-.contador {
-  margin-top: 20px;
-  font-size: 1.2rem;
-  color: #ffb3c1;
-  background: rgba(0,0,0,0.6);
-  padding: 12px 20px;
-  border-radius: 12px;
-}
-
-.mensagem-final {
-  font-size: 2rem;
-  margin-top: 30px;
-  animation: fadeIn 1.2s ease-in;
-  text-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
-}
+/* ================= BODY ================= */
 body {
   font-family: 'Playfair Display', serif;
-}
-button {
-  font-family: 'Segoe UI', sans-serif;
-}
-.cinema .mensagem-final {
-  font-size: 2.3rem;
-  animation: glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes glow {
-  from {
-    text-shadow: 0 0 10px rgba(255,107,107,0.4);
-  }
-  to {
-    text-shadow: 0 0 30px rgba(255,107,107,0.9);
-  }
-}.skip {
-  position: fixed;
-  top: 14px;
-  right: 14px;
-  font-size: 14px;
-  opacity: 0.35;
-  background: none;
-  border: none;
+  background-color: #000;          /* FUNDO PRETO */
+  background-image: none !important;
   color: #fff;
-  z-index: 1000;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-.skip:active {
-  opacity: 0.6;
+/* ================= APP ================= */
+.app {
+  min-height: 100dvh;
+  background-color: #000;          /* FUNDO PRETO */
+  background-image: none !important;
+  position: relative;
 }
+
+/* ================= PAGE ================= */
 .page {
   min-height: 100dvh;
   padding: 24px 18px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  animation: fadeIn 0.8s ease;
+
+  animation: pageEnter 1.1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes fadeIn {
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= TEXT ================= */
+h1 {
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  color: #ff6b6b;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+  animation: fadeSoft 1.2s ease forwards;
+}
+
+.texto {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.texto p {
+  line-height: 1.9;
+  font-size: clamp(1rem, 3.5vw, 1.15rem);
+  white-space: pre-line;
+
+  opacity: 0;
+  animation: fadeSoft 0.9s ease forwards;
+}
+
+@keyframes fadeSoft {
   from {
     opacity: 0;
     transform: translateY(12px);
@@ -203,47 +122,122 @@ button {
     transform: translateY(0);
   }
 }
-p {
-  max-width: 520px;
-  line-height: 1.6;
-}
-.pedido-conteudo {
-  opacity: 0;
-  transform: scale(0.98);
-  transition: all 0.6s ease;
+
+/* Cursor piscante apenas no último parágrafo */
+.texto p:last-of-type::after {
+  content: '|';
+  margin-left: 4px;
+  animation: piscar 1.1s infinite;
 }
 
-.pedido-conteudo.show {
-  opacity: 1;
-  transform: scale(1);
-}
-h1 {
-  font-size: clamp(1.6rem, 5vw, 2.4rem);
+@keyframes piscar {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 .destaque {
-  font-size: clamp(1.05rem, 4.2vw, 1.25rem);
+  color: #ff6b6b;
+  font-size: clamp(1.1rem, 4.2vw, 1.4rem);
 }
 
+/* ================= BUTTONS ================= */
 button {
-  font-size: 1rem;
-  padding: 14px 22px;
+  margin-top: 32px;
+  padding: 16px 34px;
   border-radius: 999px;
+  border: none;
+
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: 'Segoe UI', sans-serif;
+
+  background: linear-gradient(135deg, #ff6b6b, #ff8787);
+  color: #fff;
+  cursor: pointer;
+
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    opacity 0.35s ease;
 }
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+/* Botão principal pulsando */
+.amor {
+  animation: pulseSoft 2s ease-in-out infinite;
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 18px rgba(255, 107, 107, 0.35);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 32px rgba(255, 107, 107, 0.6);
+  }
+}
+
+/* ================= BOTOES SIM / NAO ================= */
 .botoes {
   display: flex;
-  gap: 16px;
-  margin-top: 24px;
+  gap: 18px;
+  margin-top: 36px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .botoes button {
   min-width: 140px;
 }
 
+.nao {
+  background: #444;
+}
 
+.nao:active {
+  background: #555;
+}
 
+/* ================= SKIP ================= */
+.skip {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: 14px;
 
+  font-size: 14px;
+  opacity: 0.4;
+  background: none;
+  border: none;
+  color: #fff;
+  z-index: 1000;
+}
 
+.skip:active {
+  opacity: 0.7;
+}
 
+/* ================= FINAL MESSAGE ================= */
+.mensagem-final {
+  font-size: clamp(1.9rem, 6vw, 2.5rem);
+  margin-top: 32px;
+  line-height: 1.4;
 
+  animation: glow 2.2s ease-in-out infinite alternate;
+}
 
+@keyframes glow {
+  from {
+    text-shadow: 0 0 14px rgba(255, 107, 107, 0.5);
+  }
+  to {
+    text-shadow: 0 0 36px rgba(255, 107, 107, 0.9);
+  }
+}

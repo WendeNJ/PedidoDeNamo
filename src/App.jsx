@@ -4,6 +4,7 @@ import Transicao from './components/Transicao'
 import Amor from './components/Amor'
 import Pedido from './components/Pedido'
 
+
 import foto from './assets/Foto de Wenderson.jpg'
 
 export default function App() {

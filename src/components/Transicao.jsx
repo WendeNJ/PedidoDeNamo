@@ -1,17 +1,25 @@
 export default function Transicao({ onNext }) {
   return (
-    <section className="page">
-      <h1>🤍 Posso te perguntar uma coisa?</h1>
+    <section className="page transicao">
+      <h1 className="titulo-transicao">
+      
+      </h1>
 
-      <p className="destaque">
+      <p className="destaque texto-transicao">
         O que antes era um rapaz meio perdido,
+        <br />
         hoje tem um objetivo muito claro:
+        <br /><br />
         construir uma <strong>família</strong>…
-        com você.
+        <br />
+        com <strong>você</strong>.
+        <br /><br />
         O <strong>“nós”</strong> é a minha maior motivação.
       </p>
 
-      <button onClick={onNext}>Continuar</button>
+      <button className="btn-continuar" onClick={onNext}>
+        Continuar →
+      </button>
     </section>
   )
 }
