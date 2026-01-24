@@ -3,37 +3,46 @@ import typingSound from '../assets/typing.mp3'
 
 export default function Typewriter({ text, speed = 40, onFinish }) {
   const [displayedText, setDisplayedText] = useState('')
-  const [index, setIndex] = useState(0)
+  const indexRef = useRef(0)
+  const baseAudioRef = useRef(null)
+    useEffect(() => {
+  const unlockAudio = () => {
+    const audio = new Audio()
+    audio.play().catch(() => {})
+    window.removeEventListener('click', unlockAudio)
+  }
 
-  const audioRef = useRef(null)
+  window.addEventListener('click', unlockAudio)
+  return () => window.removeEventListener('click', unlockAudio)
+}, [])
 
+  // cria áudio base
   useEffect(() => {
-    audioRef.current = new Audio(typingSound)
-    audioRef.current.volume = 0.2
+    baseAudioRef.current = new Audio(typingSound)
+    baseAudioRef.current.volume = 0.25
   }, [])
 
   useEffect(() => {
-    if (index < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayedText(prev => prev + text[index])
-        setIndex(index + 1)
-
-        // toca som somente se não for espaço
-        if (text[index] !== ' ') {
-          audioRef.current.currentTime = 0
-          audioRef.current.play().catch(() => {})
-        }
-      }, speed)
-
-      return () => clearTimeout(timeout)
-    } else {
-      // Para o som ao finalizar o parágrafo
-      audioRef.current.pause()
-      audioRef.current.currentTime = 0
-
-      if (onFinish) onFinish()
+    if (indexRef.current >= text.length) {
+      onFinish?.()
+      return
     }
-  }, [index, text, speed, onFinish])
+
+    const timeout = setTimeout(() => {
+      const char = text[indexRef.current]
+      setDisplayedText(prev => prev + char)
+      indexRef.current++
+
+      // toca som só se não for espaço
+      if (char !== ' ' && baseAudioRef.current) {
+        const clickSound = baseAudioRef.current.cloneNode()
+        clickSound.volume = 0.25
+        clickSound.play().catch(() => {})
+      }
+    }, speed)
+
+    return () => clearTimeout(timeout)
+  }, [displayedText])
 
   return <p>{displayedText}</p>
 }

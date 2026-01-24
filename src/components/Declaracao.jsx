@@ -30,6 +30,7 @@ será o melhor exemplo possível de mulher para eles.`
 
   const [paragrafoAtual, setParagrafoAtual] = useState(0)
   const [finalizou, setFinalizou] = useState(false)
+  const [pular, setPular] = useState(false)
 
   function proximoParagrafo() {
     if (paragrafoAtual < textos.length - 1) {
@@ -39,18 +40,35 @@ será o melhor exemplo possível de mulher para eles.`
     }
   }
 
+  function pularTudo() {
+    setPular(true)
+    setFinalizou(true)
+  }
+
   return (
     <section className="page">
       <h1>EU AMO VOCÊ</h1>
 
-      {textos.slice(0, paragrafoAtual + 1).map((texto, index) => (
-        <Typewriter
-          key={index}
-          text={texto}
-          speed={35}
-          onFinish={index === paragrafoAtual ? proximoParagrafo : null}
-        />
-      ))}
+      {!pular ? (
+        textos.slice(0, paragrafoAtual + 1).map((texto, index) => (
+          <Typewriter
+            key={index}
+            text={texto}
+            speed={35}
+            onFinish={index === paragrafoAtual ? proximoParagrafo : null}
+          />
+        ))
+      ) : (
+        textos.map((texto, index) => (
+          <p key={index} style={{ whiteSpace: 'pre-line' }}>
+            {texto}
+          </p>
+        ))
+      )}
+
+      <button className="skip" onClick={pularTudo} aria-label="Pular animação">
+        ⏩
+      </button>
 
       {finalizou && (
         <button onClick={onNext}>
