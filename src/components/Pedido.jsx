@@ -202,7 +202,7 @@ export default function Pedido() {
           onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
           onTouchStart={(e) => e.currentTarget.style.opacity = '1'}
         >
-          hoje tem? 👀
+       
         </div>
       )}
     </section>
