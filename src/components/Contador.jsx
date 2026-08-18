@@ -1,53 +1,40 @@
-import { useEffect, useState } from 'react'
+import useTempoJuntos from '../hooks/useTempoJuntos'
 
-
-  // ALTERE PARA A DATA DE VOCÊS
-  const inicio = new Date('2025-02-01T00:00:00')
-
-
-
-export default function Contador() {
-const inicio = new Date('2025-02-01T00:00:00')
-
-
-const [tempo, setTempo] = useState({
-dias: 0,
-horas: 0,
-minutos: 0,
-segundos: 0
-})
-
-
-useEffect(() => {
-function atualizar() {
-const agora = new Date()
-const diff = agora - inicio
-
-
-const dias = Math.floor(diff / (1000 * 60 * 60 * 24))
-const horas = Math.floor((diff / (1000 * 60 * 60)) % 24)
-const minutos = Math.floor((diff / (1000 * 60)) % 60)
-const segundos = Math.floor((diff / 1000) % 60)
-
-
-setTempo({ dias, horas, minutos, segundos })
+function Unidade({ valor, singular, plural }) {
+  return (
+    <div className="counter-unit">
+      <strong>{String(valor).padStart(2, '0')}</strong>
+      <span>{valor === 1 ? singular : plural}</span>
+    </div>
+  )
 }
 
+export default function Contador() {
+  const tempo = useTempoJuntos()
 
-atualizar() // atualiza imediatamente
-const timer = setInterval(atualizar, 1000)
+  return (
+    <div className="relationship-counter">
+      <div className="relationship-counter__headline">
+        <span>
+          <strong>{tempo.meses}</strong> {tempo.meses === 1 ? 'mês' : 'meses'}
+        </span>
+        <i aria-hidden="true">♥</i>
+        <span>
+          <strong>{tempo.dias}</strong> {tempo.dias === 1 ? 'dia' : 'dias'}
+        </span>
+      </div>
 
+      <div className="relationship-counter__live" aria-label="Contador do nosso namoro">
+        <Unidade valor={tempo.totalDias} singular="dia" plural="dias" />
+        <span className="counter-separator" aria-hidden="true">:</span>
+        <Unidade valor={tempo.horas} singular="hora" plural="horas" />
+        <span className="counter-separator" aria-hidden="true">:</span>
+        <Unidade valor={tempo.minutos} singular="minuto" plural="minutos" />
+        <span className="counter-separator" aria-hidden="true">:</span>
+        <Unidade valor={tempo.segundos} singular="segundo" plural="segundos" />
+      </div>
 
-return () => clearInterval(timer)
-}, [])
-
-
-return (
-<div className="contador">
-<h2>Desde que virou “nós” 💕</h2>
-<p>
-{tempo.dias} dias • {tempo.horas}h • {tempo.minutos}m • {tempo.segundos}s
-</p>
-</div>
-)
+      <p>Desde 24 de janeiro de 2026, à meia-noite.</p>
+    </div>
+  )
 }

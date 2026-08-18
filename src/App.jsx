@@ -1,28 +1,39 @@
-import { useState } from 'react'
-import Declaracao from './components/Declaracao'
-import Transicao from './components/Transicao'
-import Amor from './components/Amor'
-import Pedido from './components/Pedido'
+import { AnimatePresence, motion } from 'framer-motion'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import PedidoOriginal from './components/PedidoOriginal'
+import SeisMeses from './components/SeisMeses'
 
+const MotionDiv = motion.div
 
-import foto from './assets/Foto de Wenderson.jpg'
-
-export default function App() {
-  const [pagina, setPagina] = useState(1)
-
-  function nextPage() {
-    setPagina(p => p + 1)
-  }
+function Rotas() {
+  const location = useLocation()
 
   return (
-    <div
-      className="app"
-      style={{ backgroundImage: `url(${foto})` }}
-    >
-      {pagina === 1 && <Declaracao onNext={nextPage} />}
-      {pagina === 2 && <Transicao onNext={nextPage} />}
-      {pagina === 3 && <Amor onNext={nextPage} />}
-      {pagina === 4 && <Pedido />}
+    <div className="app">
+      <div className="ambient-glow ambient-glow--one" aria-hidden="true" />
+      <div className="ambient-glow ambient-glow--two" aria-hidden="true" />
+
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PedidoOriginal />} />
+          <Route path="/6-meses" element={<SeisMeses />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AnimatePresence>
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <MotionDiv
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Rotas />
+      </MotionDiv>
+    </BrowserRouter>
   )
 }

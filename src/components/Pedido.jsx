@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Typewriter from './Typewriter'
 import monalisa from '../assets/monalisa.mp3'
 import useCinemaMode from '../hooks/useCinemaMode'
@@ -52,6 +53,7 @@ export default function Pedido() {
           {
             id: Date.now() + Math.random(),
             left: Math.random() * 100,
+            size: 1.5 + Math.random(),
             emoji: ['❤️', '💖', '💕', '💘', '💗', '💝'][Math.floor(Math.random() * 6)]
           }
         ]
@@ -117,7 +119,7 @@ export default function Pedido() {
               className="heart-float"
               style={{ 
                 left: `${h.left}vw`,
-                fontSize: `${1.5 + Math.random() * 1}rem`
+                fontSize: `${h.size}rem`
               }}
             >
               {h.emoji}
@@ -176,9 +178,20 @@ export default function Pedido() {
 
           {/* Mensagem final */}
           {mensagemFinalDigitada && (
-            <p className="destaque mensagem-final">
-              Te amo hoje, amanhã e para sempre ❤️
-            </p>
+            <>
+              <p className="destaque mensagem-final">
+                Te amo hoje, amanhã e para sempre ❤️
+              </p>
+
+              <div className="milestone-card">
+                <span className="milestone-card__eyebrow">Nossa história continuou…</span>
+                <p>O tempo passou e aquele “sim” ganhou um novo capítulo.</p>
+                <Link to="/6-meses" className="milestone-link">
+                  Agora são 6 meses…
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </>
           )}
         </div>
       )}
